@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <header>
+        <h1 th:if="${personalUsername}" th:text="${'Current Logged in User: ' + personalUsername}"></h1>
+        <img th:if="${personalUsername}" th:src="${personalProfileImage}" alt="user profile picture">
+        <a th:if="${personalUsername}" href="/logout">Logout</a>
+    </header>
+    <main>
+        <h2 th:text="${firstname + ' ' + lastname}"></h2>
+        <p th:text="${bio}"></p>
+        <ul th:each="post : ${posts}">
+            <li th:text="${post.content + ' ' + #temporals.format(post.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></li>
+        </ul>
+        <form action="/create-post" method="post">
+            <fieldset>
+                <legend>Create New Post</legend>
+                <input type="textarea" name="content">
+                <input type="hidden" name="username" th:value="${username}">
+                <input type="submit" value="Add">
+            </fieldset>
+        </form>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+</html>
