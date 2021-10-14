@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.Set;
 
 @Controller
 public class ApplicationUserController {
@@ -60,11 +61,14 @@ public class ApplicationUserController {
         }
         ApplicationUser otherAccount = applicationUserRepository.findByUsername(username);
         m.addAttribute("username", otherAccount.getUsername());
+        m.addAttribute("profileId", otherAccount.getId());
         m.addAttribute("firstname", otherAccount.getFirstName());
         m.addAttribute("lastname", otherAccount.getLastName());
         m.addAttribute("bio", otherAccount.getBio());
         m.addAttribute("profileimage", otherAccount.getProfileImage());
         m.addAttribute("posts", otherAccount.getUserPosts());
+        m.addAttribute("following", otherAccount.getFollowing());
+        m.addAttribute("followers", otherAccount.getUsers());
         return "/userprofile";
     }
 
@@ -83,7 +87,34 @@ public class ApplicationUserController {
         m.addAttribute("bio", otherAccount.getBio());
         m.addAttribute("profileimage", otherAccount.getProfileImage());
         m.addAttribute("posts", otherAccount.getUserPosts());
+        m.addAttribute("following", otherAccount.getFollowing());
+        m.addAttribute("followers", otherAccount.getUsers());
         return "/userprofile";
+    }
+
+    @GetMapping("/feed")
+    public String viewFeed(Principal p, Model m){
+        if(p != null){
+            ApplicationUser personalAccount = applicationUserRepository.findByUsername(p.getName());
+            Set<ApplicationUser> listOfUsers = personalAccount.getFollowing();
+            m.addAttribute("personalUsername", personalAccount.getUsername());
+            m.addAttribute("personalProfileImage", personalAccount.getProfileImage());
+            m.addAttribute("listOfUsers", listOfUsers);
+        }
+        return "/feed";
+    }
+
+    @PostMapping("/follow-user/{followProfileId}")
+    public RedirectView followUser(Principal p, @PathVariable Long followProfileId){
+        if(p == null){
+            throw new IllegalArgumentException("User must be logged to follow other users!");
+        }
+        ApplicationUser personalAccount = applicationUserRepository.findByUsername(p.getName());
+        ApplicationUser followProfile = applicationUserRepository.findById(followProfileId).orElseThrow();
+
+        personalAccount.getFollowing().add(followProfile);
+        applicationUserRepository.save(personalAccount);
+        return new RedirectView("/user/" + followProfile.getUsername());
     }
 
     @PostMapping("/signup")

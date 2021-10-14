@@ -8,11 +8,25 @@
     <header>
         <h1 th:if="${personalUsername}" th:text="${'Current Logged in User: ' + personalUsername}"></h1>
         <img th:if="${personalUsername}" th:src="${personalProfileImage}" alt="user profile picture">
+        <a th:if="${personalUsername}" href="/feed">My feed</a>
         <a th:if="${personalUsername}" href="/logout">Logout</a>
     </header>
     <main>
+        <h2 th:text="${username}"></h2>
         <h2 th:text="${firstname + ' ' + lastname}"></h2>
+        <h3>Followers:</h3>
+        <ul th:each="follower : ${followers}">
+            <ol th:text="${follower.username}"></ol>
+        </ul>
+        <h3>Following:</h3>
+        <ul th:each="user : ${following}">
+            <ol th:text="${user.username}"></ol>
+        </ul>
         <p th:text="${bio}"></p>
+        <form th:if="${personalUsername != username}" th:action="${'/follow-user/' + profileId}" method="post">
+            <input type="submit" value="Follow">
+        </form>
+
         <ul th:each="post : ${posts}">
             <li th:text="${post.content + ' ' + #temporals.format(post.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></li>
         </ul>

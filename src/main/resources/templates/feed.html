@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/myprofile">My Profile</a>
+<ul th:each="user : ${listOfUsers}">
+    <ul th:each="post : ${user.getUserPosts()} ">
+        <li th:text="${post.content}"></li>
+    </ul>
+</ul>
+</body>
+</html>
