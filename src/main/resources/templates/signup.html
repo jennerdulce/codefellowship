@@ -7,6 +7,7 @@
 <body>
 <header>
     <h1>Sign Up</h1>
+    <h2 th:if="${errorMessage}" th:text="${errorMessage}"></h2>
 </header>
 <main>
     <form action="/signup" method="POST">
@@ -19,7 +20,7 @@
         <label for="bio">BIO</label>
         <input type="textarea" name="bio">
 <!--        <label for="dateOfBirth">Date of Birth</label>-->
-<!--        <input type="text" name="dateOfBirth" placeholder="MM/DD/YYYY">-->
+<!--        <input type="date" name="dateOfBirth" placeholder="MM/DD/YYYY">-->
         <label for="password">Password</label>
         <input type="password" name="password">
         <input type="submit" value="Sign Up">
